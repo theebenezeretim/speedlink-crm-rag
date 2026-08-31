@@ -9,14 +9,20 @@ from langchain_community.vectorstores import FAISS
 from route_query import detect_service
 
 
+# Load environment variables
 load_dotenv()
 
+# Initialize Groq client
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
+
+# Load embedding model
 embeddings = HuggingFaceEmbeddings(
     model_name="sentence-transformers/all-MiniLM-L6-v2"
 )
 
+
+# Load FAISS vector store
 vectorstore = FAISS.load_local(
     "vectorstore",
     embeddings,
@@ -25,6 +31,11 @@ vectorstore = FAISS.load_local(
 
 
 def retrieve(query, k=5):
+    """
+    Detect the CRM service and retrieve the most relevant
+    knowledge-base sections for the user's query.
+    """
+
     service = detect_service(query)
 
     candidates = vectorstore.similarity_search(
@@ -50,6 +61,7 @@ def retrieve(query, k=5):
     scored = []
 
     for document in candidates:
+
         document_type = "FACT"
 
         for possible_type in priority:
@@ -61,16 +73,27 @@ def retrieve(query, k=5):
             (priority.get(document_type, 1), document)
         )
 
-    scored.sort(key=lambda item: item[0], reverse=True)
+    scored.sort(
+        key=lambda item: item[0],
+        reverse=True
+    )
 
     return service, [document for _, document in scored[:k]]
 
 
-def generate_response(query):
+def generate_response(query, chat_history):
+    """
+    Generate a CRM response using:
+    - Current user query
+    - Previous conversation
+    - Retrieved CRM knowledge
+    """
+
     service, documents = retrieve(query)
 
     context = "\n\n---\n\n".join(
-        document.page_content for document in documents
+        document.page_content
+        for document in documents
     )
 
     system_prompt = """
@@ -107,25 +130,84 @@ CLIENT QUESTION:
 {query}
 
 Using the CRM knowledge above, provide the most appropriate response.
+
 Follow the applicable workflow before giving information that the workflow
 says should only be provided after clarification.
+
+Use the previous conversation to understand the client's current request,
+but do not treat previous assistant statements as CRM facts unless they are
+supported by the retrieved CRM knowledge.
 """
+
+    # Start with the system instructions
+    messages = [
+        {
+            "role": "system",
+            "content": system_prompt
+        }
+    ]
+
+    # Add previous conversation
+    messages.extend(chat_history)
+
+    # Add current query and retrieved CRM context
+    messages.append(
+        {
+            "role": "user",
+            "content": user_prompt
+        }
+    )
 
     response = client.chat.completions.create(
         model="openai/gpt-oss-120b",
-        messages=[
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_prompt},
-        ],
+        messages=messages,
         temperature=0,
     )
 
-    return response.choices[0].message.content
+    answer = response.choices[0].message.content
+
+    return answer
 
 
+# Run chatbot from the terminal
 if __name__ == "__main__":
-    question = input("Client: ")
 
-    answer = generate_response(question)
+    # Stores the conversation during this session
+    chat_history = []
 
-    print("\nCRM Assistant:", answer)
+    print("\n========================================")
+    print("SPEEDLINK CRM ASSISTANT")
+    print("Type 'exit' or 'quit' to end the chat.")
+    print("========================================")
+
+    while True:
+
+        question = input("\nClient: ")
+
+        # Allow the user to end the conversation
+        if question.lower().strip() in ["exit", "quit"]:
+            print("\nCRM Assistant: Goodbye!")
+            break
+
+        # Generate response
+        answer = generate_response(
+            question,
+            chat_history
+        )
+
+        print("\nCRM Assistant:", answer)
+
+        # Save the conversation
+        chat_history.append(
+            {
+                "role": "user",
+                "content": question
+            }
+        )
+
+        chat_history.append(
+            {
+                "role": "assistant",
+                "content": answer
+            }
+        )
