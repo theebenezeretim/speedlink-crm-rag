@@ -55,18 +55,18 @@ def detect_service(query):
     return "unknown"
 
 
-queries = [
-    "I need somewhere to work for a few hours",
-    "How much is your internet?",
-    "I want to take a Python course",
-    "Where can I write my Pearson VUE exam?",
-    "I don't have a research topic",
-]
+if __name__ == "__main__":
+    queries = [
+        "I need somewhere to work for a few hours",
+        "How much is your internet?",
+        "I want to take a Python course",
+        "Where can I write my Pearson VUE exam?",
+        "I don't have a research topic",
+    ]
 
+    for query in queries:
+        service = detect_service(query)
 
-for query in queries:
-    service = detect_service(query)
-
-    print(f"Query: {query}")
-    print(f"Detected service: {service}")
-    print()
+        print(f"Query: {query}")
+        print(f"Detected service: {service}")
+        print()
