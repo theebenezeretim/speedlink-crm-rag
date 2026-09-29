@@ -31,6 +31,7 @@
 > - FTTH Internet / Broadband
 > - Training Programs
 > - Pearson VUE Exam Registration
+> - Research & Innovation Support (Speedlink Innovation Company)
 
 ## COMMERCIAL — WORKSPACE — ENTRY
 **Type:** WORKFLOW
@@ -244,7 +245,7 @@ THEN: Recommend Training Hall or ICT Simulation Room
 ## COMMERCIAL — WORKSPACE — CLOSING
 **Type:** WORKFLOW
 **Trigger:** Client: I want it
-**Action:** Collect full name, workspace type, and start date; offer to generate invoice.
+**Action:** Explain that the Speedlink team needs full name, workspace type, and start date to prepare an invoice. This demo does not generate invoices or submit bookings.
 **Content:**
 > Perfect 👍
 > Please provide:
@@ -252,7 +253,7 @@ THEN: Recommend Training Hall or ICT Simulation Room
 > - Workspace type
 > - Start date
 >
-> Shall I generate your invoice now?
+> The Speedlink team can prepare an invoice using these details.
 
 ## COMMERCIAL — WORKSPACE — CORE RULES
 **Type:** BUSINESS_RULE
@@ -264,10 +265,10 @@ THEN: Recommend Training Hall or ICT Simulation Room
 ## COMMERCIAL — FTTH INTERNET — INQUIRY
 **Type:** WORKFLOW
 **Trigger:** Client: I need internet
-**Action:** Thank the client and request their location to check coverage.
+**Action:** Thank the client and request their location so the Speedlink team can check coverage. This demo cannot perform a coverage lookup.
 **Content:**
 > Thank you for your interest in our FTTH service 👍
-> May I have your location to check coverage?
+> May I have your location? The Speedlink team will need it to check coverage.
 
 ## COMMERCIAL — FTTH INTERNET — COVERAGE EXPLANATION
 **Type:** FACT
@@ -286,23 +287,27 @@ THEN: Recommend Training Hall or ICT Simulation Room
 >
 > Installation depends on your location.
 
+The billing period is not specified in this knowledge base. Do not label these
+prices as monthly, weekly, daily, annual, or per-month fees. Internet speeds and
+data allowances are also unspecified. The Speedlink team must confirm them.
+
 ## COMMERCIAL — FTTH INTERNET — COVERAGE RESULT
 **Type:** CONDITION
 **Content:**
-IF Covered:
-> Good news 👍 Your area is covered.
-> Setup fee is ₦[amount]. Shall we proceed?
+Coverage and installation charges require confirmation by the Speedlink team.
+This knowledge base contains no coverage map or installation fee table.
+Do not infer coverage from a city, address, or a client's assertion.
 
-IF Not Covered:
-> Your location is outside FTTH coverage.
-> We can offer Radio Broadband instead. Should I check pricing?
+If the team confirms coverage, they can quote the setup fee.
+If the team confirms the location is not covered, Radio Broadband is an alternative
+for the team to discuss. No Radio Broadband prices are supplied here.
 
 ## COMMERCIAL — FTTH INTERNET — CLOSING
 **Type:** WORKFLOW
 **Trigger:** Client: I want it
 **Content:**
 > Perfect 👍 Let's proceed.
-> Shall I send your invoice now?
+> The Speedlink team can confirm coverage and prepare your invoice.
 
 ## COMMERCIAL — TRAINING — INQUIRY
 **Type:** WORKFLOW
@@ -342,18 +347,23 @@ IF Not Covered:
 **Trigger:** Client: How much?
 **Content:**
 > Cost depends on course and mode (online/onsite).
-> Would you like me to share full breakdown for your selected course?
+> Please tell us your selected course and preferred mode so the Speedlink team can provide a quotation.
+
+No course fee breakdowns are supplied in this knowledge base. The chatbot must not
+invent fees or promise to provide exact fees after the client answers a follow-up.
 
 ## COMMERCIAL — TRAINING — CLOSING
 **Type:** WORKFLOW
 **Content:**
-> Shall we secure your training slot today?
+> Would you like to discuss the next registration steps with the Speedlink team?
 
 ## COMMERCIAL — TRAINING — PAYMENT CONFIRMATION
 **Type:** PAYMENT_INFORMATION
 **Content:**
-> Payment confirmed 👍
-> You will receive LMS access and onboarding details shortly.
+> Please ask the Speedlink team to verify your payment. After verification, the team can arrange LMS access and onboarding details.
+
+The demo cannot verify payments or issue access. A client's statement that they
+paid is not independent payment confirmation.
 
 ## COMMERCIAL — PEARSON VUE — INQUIRY
 **Type:** WORKFLOW
@@ -364,7 +374,7 @@ IF Not Covered:
 
 ## COMMERCIAL — PEARSON VUE — REGISTRATION
 **Type:** QUALIFICATION_REQUIREMENT
-**Action:** Collect full name, exam type, and location. Registration takes 24–48 hours.
+**Action:** Explain that the Speedlink team needs full name, exam type, and location. Registration takes 24–48 hours. The demo cannot submit these details or start a registration; the client must contact the team to proceed.
 **Content:**
 > To proceed, I need:
 > - Full name
@@ -387,14 +397,15 @@ IF Not Covered:
 ## COMMERCIAL — PEARSON VUE — PAYMENT CLOSE
 **Type:** PAYMENT_INFORMATION
 **Content:**
-> Your total is ₦[amount].
-> Shall I send invoice now?
+> The Speedlink team must confirm the exam's base fee and current exchange rate before quoting the total and preparing an invoice.
 
 ## COMMERCIAL — PEARSON VUE — COMPLETION
 **Type:** OUTCOME
 **Content:**
-> Exam scheduled 👍
-> You will receive full details via email.
+> The Speedlink team handles exam scheduling and confirmation emails after registration is processed.
+
+This demo cannot register or schedule an exam or send email. Do not claim any of
+these actions has happened or promise that the chatbot will perform them.
 
 ## COMMERCIAL — OBJECTION HANDLING — PRICE OBJECTION
 **Type:** RESPONSE_TEMPLATE
@@ -439,9 +450,9 @@ IF Not Covered:
 - Always guide toward decision
 - Never leave conversation open-ended
 - Always push toward next step
-- Always confirm service type first
+- Confirm service type when it is not already clear from the conversation
 - Always collect location or intent early
-- Always end with CTA (invoice / registration / proceed)
+- Offer a relevant next step within the chatbot's capabilities; staff handle invoices, registration, payment verification, and coverage checks
 
 ## COMMERCIAL — GLOBAL — FINAL OBJECTIVE
 **Type:** FACT
